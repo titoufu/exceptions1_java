@@ -11,6 +11,7 @@ import entities.Reservation;
 public class Program {
 
 	public static void main(String[] args) throws ParseException {
+		Reservation reserva = new Reservation();
 		Locale.setDefault(Locale.US);
 		Scanner sc = new Scanner(System.in);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -23,25 +24,22 @@ public class Program {
 		if (!dataOut.after(dataIn)) {
 			System.out.println("Error in reservation: Check-out date must be after check-in date");
 		} else {
-			Reservation reserva = new Reservation(room, dataIn, dataOut);
+			reserva = new Reservation(room, dataIn, dataOut);
 			System.out.println("Reservation: " + reserva);
-			System.out.println();
-			System.out.println("Enter data to update the reservation:");
+			System.out.println(" ");
+			System.out.println("Enter data to update the reservation: ");
 			System.out.print("Check in date (dd/MM/yyyy): ");
 			dataIn = sdf.parse(sc.next());
 			System.out.print("Check out date (dd/MM/yyyy): ");
 			dataOut = sdf.parse(sc.next());
-			Date now = new Date();
-			if (dataIn.before(now) || dataOut.before(now)) {
-				System.out.println("Error in reservation: Reservation dates for update must be future dates");
-			} else if (!dataOut.after(dataIn)) {
-				System.out.println("Error in reservation: Check-out date must be after check-in date");
+			String erro = reserva.updateDates(dataIn, dataOut);
+			if (erro != null) {
+				System.out.println(erro);
 			} else {
-				reserva.updateDates(dataIn, dataOut);
+				reserva = new Reservation(room, dataIn, dataOut);
 				System.out.println("Reservation: " + reserva);
 			}
 		}
-
 		sc.close();
 	}
 }
