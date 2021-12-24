@@ -7,24 +7,23 @@ import java.util.Locale;
 import java.util.Scanner;
 
 import entities.Reservation;
+import entities.exceptions.DomainException;
 
 public class Program {
 
-	public static void main(String[] args) throws ParseException {
-		Reservation reserva = new Reservation();
+	public static void main(String[] args) {
+
 		Locale.setDefault(Locale.US);
 		Scanner sc = new Scanner(System.in);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		System.out.print("Room number: ");
-		int room = sc.nextInt();
-		System.out.print("Check in date (dd/MM/yyyy): ");
-		Date dataIn = sdf.parse(sc.next());
-		System.out.print("Check out date (dd/MM/yyyy): ");
-		Date dataOut = sdf.parse(sc.next());
-		if (!dataOut.after(dataIn)) {
-			System.out.println("Error in reservation: Check-out date must be after check-in date");
-		} else {
-			reserva = new Reservation(room, dataIn, dataOut);
+		try {
+			System.out.print("Room number: ");
+			int room = sc.nextInt();
+			System.out.print("Check in date (dd/MM/yyyy): ");
+			Date dataIn = sdf.parse(sc.next());
+			System.out.print("Check out date (dd/MM/yyyy): ");
+			Date dataOut = sdf.parse(sc.next());
+			Reservation reserva = new Reservation(room, dataIn, dataOut);
 			System.out.println("Reservation: " + reserva);
 			System.out.println(" ");
 			System.out.println("Enter data to update the reservation: ");
@@ -32,13 +31,12 @@ public class Program {
 			dataIn = sdf.parse(sc.next());
 			System.out.print("Check out date (dd/MM/yyyy): ");
 			dataOut = sdf.parse(sc.next());
-			String erro = reserva.updateDates(dataIn, dataOut);
-			if (erro != null) {
-				System.out.println(erro);
-			} else {
-				reserva = new Reservation(room, dataIn, dataOut);
-				System.out.println("Reservation: " + reserva);
-			}
+			reserva.updateDates(dataIn, dataOut);
+			System.out.println("Reservation: " + reserva);
+		} catch (ParseException e) {
+			System.out.println("Invalid date format");
+		} catch (DomainException e) {
+			System.out.println(e.getMessage());
 		}
 		sc.close();
 	}
